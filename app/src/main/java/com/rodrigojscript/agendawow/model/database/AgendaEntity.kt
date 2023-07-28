@@ -17,5 +17,7 @@ class AgendaEntity {
 
         @ColumnInfo(name = "phone") var phone: Int,
 
+        @ColumnInfo(name = "photoUri") var photoUri: String?,
+
         )
 }
