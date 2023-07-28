@@ -27,4 +27,8 @@ class AgendaRepository(application: Application) {
     suspend fun updateData(datos: AgendaEntity.Contacto) {
         agendaDAO.update(datos)
     }
+
+    suspend fun deleteAllData() {
+        agendaDAO.deleteAllData()
+    }
 }

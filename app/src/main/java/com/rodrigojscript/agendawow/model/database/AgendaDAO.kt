@@ -21,4 +21,7 @@ interface AgendaDAO {
 
     @Update
     suspend fun update(contactos: AgendaEntity.Contacto)
+
+    @Query("DELETE FROM contactos")
+    suspend fun deleteAllData()
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,12 +42,24 @@ import com.rodrigojscript.agendawow.viewModel.AgendaViewModel
 fun MostrarDatos(navController: NavController, agendaViewModel: AgendaViewModel) {
     val list: List<AgendaEntity.Contacto> =
         agendaViewModel.getAllData().observeAsState(listOf()).value
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
         itemsIndexed(list) { _, item ->
             CustomCardData(item, agendaViewModel)
+        }
+
+        item {
+            Button(
+                onClick = { agendaViewModel.deleteAllData() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete All Contacts")
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Delete All Contacts")
+            }
         }
     }
 }

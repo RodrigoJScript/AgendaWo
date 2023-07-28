@@ -27,4 +27,10 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             agendaRepository.deleteData(datos)
         }
     }
+
+    fun deleteAllData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            agendaRepository.deleteAllData()
+        }
+    }
 }
