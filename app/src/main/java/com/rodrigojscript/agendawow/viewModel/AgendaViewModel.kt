@@ -33,4 +33,10 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             agendaRepository.deleteAllData()
         }
     }
+
+    fun updateData(datos: AgendaEntity.Contacto) {
+        viewModelScope.launch(Dispatchers.IO) {
+            agendaRepository.updateData(datos)
+        }
+    }
 }
