@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rodrigojscript.agendawow.ui.screens.GuardarDatos
 import com.rodrigojscript.agendawow.ui.screens.MostrarDatos
+import com.rodrigojscript.agendawow.ui.screens.SplashScreen
 import com.rodrigojscript.agendawow.ui.theme.AgendaWowTheme
 import com.rodrigojscript.agendawow.viewModel.AgendaViewModel
 
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "inicio") {
+                    NavHost(navController = navController, startDestination = "splash") {
                         composable("inicio") { Inicio(navController) }
                         composable("mostrarDatos") { MostrarDatos(navController, agendaViewModel) }
                         composable("guardarDatos") {
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                                 agendaViewModel = agendaViewModel, navController
                             )
                         }
+                        composable("splash") { SplashScreen(navController) }
                     }
                 }
             }
