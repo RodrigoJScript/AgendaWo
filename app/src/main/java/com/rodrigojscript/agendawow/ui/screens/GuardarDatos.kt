@@ -3,6 +3,7 @@ package com.rodrigojscript.agendawow.ui.screens
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.rodrigojscript.agendawow.model.database.AgendaEntity
 import com.rodrigojscript.agendawow.viewModel.AgendaViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,6 +77,8 @@ fun GuardarDatos(agendaViewModel: AgendaViewModel, navController: NavController)
                 Text(text = "Add Photo")
             }
             selectedImageUri?.let { uri ->
+                val newImageUri: Uri? = saveImageToExternalStorage(context, uri)
+                selectedImageUri = newImageUri
                 val bitmap = loadBitmap(context, uri)
                 bitmap?.let { image ->
                     Spacer(modifier = Modifier.height(16.dp))
@@ -129,4 +135,23 @@ fun loadBitmap(context: Context, uri: Uri): Bitmap? {
         e.printStackTrace()
         null
     }
+}
+
+fun saveImageToExternalStorage(context: Context, uri: Uri): Uri? {
+    val outputStream: OutputStream?
+    try {
+        val extension = context.contentResolver.getType(uri)?.substringAfter('/')
+        val fileName = "contact_image_${System.currentTimeMillis()}.${extension}"
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName)
+        outputStream = FileOutputStream(file)
+        context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        outputStream.flush()
+        outputStream.close()
+        return Uri.fromFile(file)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
 }
