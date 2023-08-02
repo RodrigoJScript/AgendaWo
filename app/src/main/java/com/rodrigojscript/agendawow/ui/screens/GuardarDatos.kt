@@ -11,7 +11,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,10 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.rodrigojscript.agendawow.model.database.AgendaEntity
 import com.rodrigojscript.agendawow.viewModel.AgendaViewModel
 import java.io.File
@@ -44,7 +45,7 @@ import java.io.OutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GuardarDatos(agendaViewModel: AgendaViewModel, navController: NavController) {
+fun GuardarDatos(agendaViewModel: AgendaViewModel) {
     var name by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -61,21 +62,40 @@ fun GuardarDatos(agendaViewModel: AgendaViewModel, navController: NavController)
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
         item {
-            TextField(value = name, onValueChange = { name = it }, label = { Text("Name") })
+            TextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") },
+                colors = TextFieldDefaults.textFieldColors(cursorColor = Color.Blue)
+            )
             TextField(
                 value = lastName,
                 onValueChange = { lastName = it },
-                label = { Text("Last Name") })
-            TextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-            TextField(value = phone, onValueChange = { phone = it }, label = { Text("Phone") })
+                label = { Text("Last Name") },
+                colors = TextFieldDefaults.textFieldColors(cursorColor = Color.Blue)
+            )
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                colors = TextFieldDefaults.textFieldColors(cursorColor = Color.Blue)
+            )
+            TextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Phone") },
+                colors = TextFieldDefaults.textFieldColors(cursorColor = Color.Blue)
+            )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { launcher.launch("image/*") }
+                onClick = { launcher.launch("image/*") },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Select Photo")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Add Photo")
+                Text(text = "Add Photo", color = Color.White)
             }
+
             selectedImageUri?.let { uri ->
                 val newImageUri: Uri? = saveImageToExternalStorage(context, uri)
                 selectedImageUri = newImageUri
@@ -95,12 +115,9 @@ fun GuardarDatos(agendaViewModel: AgendaViewModel, navController: NavController)
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    // Convertir el campo 'phone' de String a Int
                     val phoneInt: Int = try {
                         phone.toInt()
                     } catch (e: NumberFormatException) {
-                        // Manejar el error si el usuario ingresa un valor no numérico
-                        // Aquí puedes mostrar un mensaje al usuario o realizar alguna otra acción apropiada
                         return@Button
                     }
                     val contact = AgendaEntity.Contacto(
@@ -109,11 +126,11 @@ fun GuardarDatos(agendaViewModel: AgendaViewModel, navController: NavController)
                         lastName = lastName,
                         email = email,
                         phone = phoneInt,
-                        photoUri = selectedImageUri?.toString() // Guardamos la ruta de la foto como String
+                        photoUri = selectedImageUri?.toString()
                     )
                     agendaViewModel.insertData(contact)
                 },
-                modifier = Modifier.fillMaxWidth()
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
             ) {
                 Icon(Icons.Default.Favorite, contentDescription = "Save")
                 Spacer(modifier = Modifier.width(8.dp))

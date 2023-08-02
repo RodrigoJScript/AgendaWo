@@ -5,19 +5,30 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
@@ -36,17 +47,16 @@ class MainActivity : AppCompatActivity() {
         val agendaViewModel: AgendaViewModel = ViewModelProvider(this)[AgendaViewModel::class.java]
         setContent {
             AgendaWowTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "splash") {
                         composable("inicio") { Inicio(navController) }
-                        composable("mostrarDatos") { MostrarDatos(navController, agendaViewModel) }
+                        composable("mostrarDatos") { MostrarDatos(agendaViewModel) }
                         composable("guardarDatos") {
                             GuardarDatos(
-                                agendaViewModel = agendaViewModel, navController
+                                agendaViewModel = agendaViewModel
                             )
                         }
                         composable("splash") { SplashScreen(navController) }
@@ -88,29 +98,60 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Inicio(navController: NavHostController) {
         var auth by rememberSaveable { mutableStateOf(false) }
-        Column {
-            Button(onClick = { navController.navigate("guardarDatos") }, enabled = auth) {
-                Text(text = "Guardar datos")
-            }
-            Button(onClick = { navController.navigate("mostrarDatos") }, enabled = auth) {
-                Text(text = "Mostrar datos")
-            }
-            Button(onClick = {
-                authenticate {
-                    if (auth) {
-                        auth = false
-                    } else {
-                        auth = it
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(text = "AgendaWoW")
                     }
+                )
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    modifier = Modifier.size(100.dp),
+                    painter = painterResource(id = R.drawable.dos),
+                    contentDescription = "Logo"
+                )
+                Button(
+                    onClick = { navController.navigate("guardarDatos") },
+                    enabled = auth,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Guardar datos")
                 }
-            }) {
-                Text(text = "Autenticar")
+                Button(
+                    onClick = { navController.navigate("mostrarDatos") },
+                    enabled = auth,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Mostrar datos")
+                }
+                Button(
+                    onClick = {
+                        authenticate {
+                            auth = !auth
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = if (auth) "Cerrar sesión" else "Iniciar sesión")
+                }
             }
         }
     }
+
 
 }
 

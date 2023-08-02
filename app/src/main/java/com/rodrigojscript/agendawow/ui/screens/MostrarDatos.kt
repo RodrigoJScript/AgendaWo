@@ -46,12 +46,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
 import com.rodrigojscript.agendawow.model.database.AgendaEntity
 import com.rodrigojscript.agendawow.viewModel.AgendaViewModel
 
 @Composable
-fun MostrarDatos(navController: NavController, agendaViewModel: AgendaViewModel) {
+fun MostrarDatos(agendaViewModel: AgendaViewModel) {
     val list: List<AgendaEntity.Contacto> =
         agendaViewModel.getAllData().observeAsState(listOf()).value
     val showDialog = remember { mutableStateOf(false) }
@@ -70,20 +69,26 @@ fun MostrarDatos(navController: NavController, agendaViewModel: AgendaViewModel)
 
         item {
             Button(
-                onClick = { agendaViewModel.deleteAllData() }, modifier = Modifier.fillMaxWidth()
+                onClick = { agendaViewModel.deleteAllData() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
             ) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete All Contacts")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Delete All Contacts")
+                Text(text = "Delete All Contacts", color = Color.White)
             }
         }
     }
 
     if (showDialog.value && selectedContact != null) {
-        EditContactDialogCustom(contact = selectedContact!!, onEdit = { editedContact ->
-            agendaViewModel.updateData(editedContact)
-            showDialog.value = false
-        }, onDismiss = { showDialog.value = false })
+        EditContactDialogCustom(
+            contact = selectedContact!!,
+            onEdit = { editedContact ->
+                agendaViewModel.updateData(editedContact)
+                showDialog.value = false
+            },
+            onDismiss = { showDialog.value = false }
+        )
     }
 }
 
@@ -96,24 +101,32 @@ fun CustomCardData(
     val openDialog = remember { mutableStateOf(false) }
 
     if (openDialog.value) {
-        AlertDialog(title = { Text(text = "Estas a punto de eliminar un registro") }, text = {
-            Text(
-                text = "¿Eliminar?"
-            )
-        }, onDismissRequest = { openDialog.value = false }, confirmButton = {
-            TextButton(onClick = { // (4)
-                agendaViewModel.deleteData(item)
-                openDialog.value = false
-            }) {
-                Text(text = "Eliminar", color = Color.Black)
+        AlertDialog(
+            title = { Text(text = "Estás a punto de eliminar un registro") },
+            text = {
+                Text(text = "¿Eliminar?")
+            },
+            onDismissRequest = { openDialog.value = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        agendaViewModel.deleteData(item)
+                        openDialog.value = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
+                ) {
+                    Text(text = "Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { openDialog.value = false },
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+                ) {
+                    Text(text = "Cancelar")
+                }
             }
-        }, dismissButton = {
-            TextButton(onClick = { // (5)
-                openDialog.value = false
-            }) {
-                Text(text = "Cancelar", color = Color.Black)
-            }
-        })
+        )
     }
 
     val showDialog = remember { mutableStateOf(false) }
@@ -121,10 +134,10 @@ fun CustomCardData(
     if (showDialog.value) {
         EditContactDialogCustom(contact = item, onEdit = { editedContact ->
             agendaViewModel.updateData(editedContact)
-            showDialog.value = false // Cerrar el diálogo después de guardar los cambios
+            showDialog.value = false
         }, onDismiss = {
             showDialog.value = false
-        } // Cerrar el diálogo al hacer clic en "Cancelar"
+        }
         )
     }
     Card(
@@ -157,28 +170,28 @@ fun CustomCardData(
             ) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Ticket: $${item.name}",
+                    text = "Nombre: ${item.name}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 16.sp
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Nota 1: $${item.lastName}",
+                    text = "Apellido: ${item.lastName}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 16.sp
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Nota 2: $${item.email}",
+                    text = "Email: $${item.email}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 16.sp
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Nota 3: $${item.phone}",
+                    text = "Telefono: $${item.phone}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 16.sp
                 )
