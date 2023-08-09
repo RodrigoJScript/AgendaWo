@@ -54,6 +54,7 @@ fun MostrarDatos(agendaViewModel: AgendaViewModel) {
     val list: List<AgendaEntity.Contacto> =
         agendaViewModel.getAllData().observeAsState(listOf()).value
     val showDialog = remember { mutableStateOf(false) }
+    val showDeleteAllDialog = remember { mutableStateOf(false) }
     var selectedContact: AgendaEntity.Contacto? by remember { mutableStateOf(null) }
 
     LazyColumn(
@@ -69,7 +70,7 @@ fun MostrarDatos(agendaViewModel: AgendaViewModel) {
 
         item {
             Button(
-                onClick = { agendaViewModel.deleteAllData() },
+                onClick = { showDeleteAllDialog.value = true },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
             ) {
@@ -78,6 +79,33 @@ fun MostrarDatos(agendaViewModel: AgendaViewModel) {
                 Text(text = "Delete All Contacts", color = Color.White)
             }
         }
+    }
+    if (showDeleteAllDialog.value) {
+        AlertDialog(
+            title = { Text(text = "Confirm Delete") },
+            text = { Text(text = "Are you sure you want to delete all contacts?") },
+            onDismissRequest = { showDeleteAllDialog.value = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        agendaViewModel.deleteAllData()
+                        showDeleteAllDialog.value = false
+                        // Agrega aquí el código para mostrar un Toast o una confirmación de eliminación exitosa
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Red)
+                ) {
+                    Text(text = "Delete All")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteAllDialog.value = false },
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+                ) {
+                    Text(text = "Cancel")
+                }
+            }
+        )
     }
 
     if (showDialog.value && selectedContact != null) {
@@ -184,24 +212,26 @@ fun CustomCardData(
 
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Email: $${item.email}",
+                    text = "Email: ${item.email}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 16.sp
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Telefono: $${item.phone}",
+                    text = "Telefono: ${item.phone}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 16.sp
                 )
             }
-            Spacer(modifier = Modifier.width(10.dp))
-            IconButton(onClick = { openDialog.value = true }) {
-                Icon(Icons.Filled.Delete, "")
-            }
-            IconButton(onClick = { onEditClicked(item) }) {
-                Icon(Icons.Filled.Edit, "")
+            Row {
+                IconButton(onClick = { openDialog.value = true }) {
+                    Icon(Icons.Filled.Delete, "")
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                IconButton(onClick = { onEditClicked(item) }) {
+                    Icon(Icons.Filled.Edit, "")
+                }
             }
         }
     }
