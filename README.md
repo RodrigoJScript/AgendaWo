@@ -10,13 +10,9 @@ AgendaWow es una aplicación de gestión de contactos desarrollada en Jetpack Co
 - Arquitectura MVVM: Diseño modular y escalable para una mejor organización del código.
 - Jetpack Compose: Interfaz de usuario moderna y flexible.
 
-## Capturas de Pantalla
-
-_(¡Agrega algunas capturas de pantalla de tu aplicación aquí!)_
-
 ## Requisitos del Sistema
 
-- Dispositivo con Android 5.0 o superior.
+- Dispositivo con Android 7.0 o superior.
 - Soporte para huella digital (si se va a utilizar la autenticación por huella digital).
 
 ## Instalación
@@ -35,6 +31,3 @@ _(¡Agrega algunas capturas de pantalla de tu aplicación aquí!)_
 4. Sube a la rama: `git push origin nueva-caracteristica`
 5. Crea un Pull Request.
 
-## Licencia
-
-Este proyecto está bajo la Licencia XYZ. Ver el archivo [LICENSE](LICENSE) para más detalles.
